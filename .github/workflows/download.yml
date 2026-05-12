@@ -1,0 +1,52 @@
+name: Simple Download
+on:
+  workflow_dispatch:
+    inputs:
+      address:
+        description: "Full url to download (e.g., https://example.com/sample-file.zip)"
+        required: true
+        type: string
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: download and commit
+        run: |
+          set -u
+
+          URL="${{ github.event.inputs.address }}"
+          FILE_NAME=$(basename "$URL")
+
+          TEMP_BASE_PATH="temp"
+          TEMP_FILE_PATH="${TEMP_BASE_PATH}/${FILE_NAME}"
+
+          DOWNLOADS_BASE_PATH="downloads"
+          LIMIT_SIZE_MB=50
+
+          mkdir -p $TEMP_BASE_PATH $DOWNLOADS_BASE_PATH
+
+          $(curl -L --silent --show-error --connect-timeout 10 --max-time 20 -o "$TEMP_FILE_PATH" "$URL") || { echo "CURL ERROR"; exit 1; }
+
+          SIZE=$(stat -c%s "$TEMP_FILE_PATH")
+          if [ "$SIZE" -gt $((LIMIT_SIZE_MB * 1024 * 1024)) ]; then
+            mkdir -p "$DOWNLOADS_BASE_PATH/$FILE_NAME"
+            zip -0 -s "${LIMIT_SIZE_MB}m" "$DOWNLOADS_BASE_PATH/$FILE_NAME/$FILE_NAME.zip" -j "$TEMP_FILE_PATH"
+            rm -f "$TEMP_FILE_PATH"
+          else
+            mv "$TEMP_FILE_PATH" "$DOWNLOADS_BASE_PATH/$FILE_NAME"
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add $DOWNLOADS_BASE_PATH
+          git commit -m $URL
+          git push
+          
+          echo "OK"
+          exit 0
