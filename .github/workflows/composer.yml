@@ -35,16 +35,20 @@ jobs:
 
       - name: Create Project Directory
         run: |
-          FOLDER_NAME="composer-${{ github.event.inputs.id }}"
-          mkdir -p $FOLDER_NAME
-          cd $FOLDER_NAME
-          composer ${{ github.event.inputs.command }}
-          cd ..
-          zip -rq "composer-${{ github.event.inputs.id }}.zip" "./composer-${{ github.event.inputs.id }}"
+          FOLDER_BASE="composer"
+          mkdir -p $FOLDER_BASE
+          cd $FOLDER_BASE
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: laravel-project
-          path: "./composer-${{ github.event.inputs.id }}.zip"
-          retention-days: 1
+          FOLDER_NAME="composer-${{ github.event.inputs.id }}"
+          mkdir -p $FOLDER_PATH
+          cd $FOLDER_PATH
+          composer ${{ github.event.inputs.command }}
+
+          cd ..
+          zip -rq "$FOLDER_NAME.zip" "$FOLDER_NAME"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$FOLDER_BASE/$FOLDER_NAME"
+          git commit -m $FOLDER_NAME
+          git push
