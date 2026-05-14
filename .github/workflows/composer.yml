@@ -45,7 +45,7 @@ jobs:
           composer ${{ github.event.inputs.command }}
 
           cd ..
-          zip -rq "$FOLDER_NAME.zip" "$FOLDER_NAME"
+          zip -rq "$FOLDER_NAME.zip" "./$FOLDER_NAME"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
