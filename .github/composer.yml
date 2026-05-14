@@ -1,0 +1,50 @@
+name: Composer Command
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: "project id (without 'composer-' phrase)"
+        description: "project id"
+        required: true
+        type: string
+      command:
+        description: "composer command (without 'composer ...' prefix)"
+        required: true
+        type: string
+      content:
+        description: "composer.json content"
+        required: false
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, curl, zip, pdo
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer self-update
+
+      - name: Create Project Directory
+        run: |
+          FOLDER_NAME="composer-${{ github.event.inputs.id }}"
+          mkdir -p $FOLDER_NAME
+          cd $FOLDER_NAME
+          composer ${{ github.event.inputs.command }}
+          zip -r "../composer-${{ github.event.inputs.id }}.zip" .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: laravel-project
+          path: "../composer-${{ github.event.inputs.id }}.zip"
+          retention-days: 1
