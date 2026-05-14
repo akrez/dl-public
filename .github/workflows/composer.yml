@@ -4,7 +4,6 @@ on:
     inputs:
       id:
         description: "project id (without 'composer-' phrase)"
-        description: "project id"
         required: true
         type: string
       command:
