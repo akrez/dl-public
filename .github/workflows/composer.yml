@@ -40,8 +40,8 @@ jobs:
           cd $FOLDER_BASE
 
           FOLDER_NAME="composer-${{ github.event.inputs.id }}"
-          mkdir -p $FOLDER_PATH
-          cd $FOLDER_PATH
+          mkdir -p $FOLDER_NAME
+          cd $FOLDER_NAME
           composer ${{ github.event.inputs.command }}
 
           cd ..
