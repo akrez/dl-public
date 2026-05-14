@@ -39,7 +39,7 @@ jobs:
           mkdir -p $FOLDER_NAME
           cd $FOLDER_NAME
           composer ${{ github.event.inputs.command }}
-          zip -r "../composer-${{ github.event.inputs.id }}.zip" .
+          zip -r "composer-${{ github.event.inputs.id }}.zip" "./composer-${{ github.event.inputs.id }}"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
