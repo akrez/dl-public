@@ -31,7 +31,7 @@ jobs:
 
           mkdir -p $TEMP_BASE_PATH $DOWNLOADS_BASE_PATH
 
-          $(curl -L --silent --show-error --connect-timeout 10 --max-time 20 -o "$TEMP_FILE_PATH" "$URL") || { echo "CURL ERROR"; exit 1; }
+          $(curl -L  --location --show-error --connect-timeout 60 --max-time 3600 -o "$TEMP_FILE_PATH" "$URL") || { echo "CURL ERROR"; exit 1; }
 
           SIZE=$(stat -c%s "$TEMP_FILE_PATH")
           if [ "$SIZE" -gt $((LIMIT_SIZE_MB * 1024 * 1024)) ]; then
