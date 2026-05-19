@@ -31,23 +31,22 @@ jobs:
 
       - name: Run
         run: |
-          BASE_PATH="$PWD/../../composer"
-          PROJECT_NAME="$BASE_PATH/${{ github.event.inputs.project_name }}"
-          ARCHIVE_PATH="$BASE_PATH/${{ github.event.inputs.project_name }}.zip"
-          PROJECT_DIR="$(dirname "$PROJECT_NAME")"
+          COMPOSER_PATH="$PWD/../../composer"
+          PROJECT_NAME="${{ github.event.inputs.project_name }}"
+          PROJECT_PATH="$COMPOSER_PATH/$PROJECT_NAME"
+          ARCHIVE_PATH="$COMPOSER_PATH/$PROJECT_NAME.zip"
 
-          mkdir -p $PROJECT_NAME
+          mkdir -p $PROJECT_PATH
 
-          cd $PROJECT_NAME
-
+          cd $PROJECT_PATH
           composer ${{ github.event.inputs.command }}
 
-          cd $PROJECT_DIR
-          zip -r "$ARCHIVE_PATH" "$PROJECT_NAME"
+          cd $COMPOSER_PATH
+          zip -r "$ARCHIVE_PATH" "$PROJECT_PATH"
 
           cd ..
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "$ARCHIVE_PATH"
-          git commit -m $ARCHIVE_PATH
+          git commit -m $PROJECT_NAME
           git push
