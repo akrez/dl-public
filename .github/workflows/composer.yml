@@ -34,7 +34,8 @@ jobs:
           COMPOSER_PATH="$PWD/composer"
           PROJECT_NAME="${{ github.event.inputs.project_name }}"
           PROJECT_PATH="$COMPOSER_PATH/$PROJECT_NAME"
-          ARCHIVE_PATH="$COMPOSER_PATH/$PROJECT_NAME.zip"
+          ARCHIVE_NAME="$PROJECT_NAME.zip"
+          ARCHIVE_PATH="$COMPOSER_PATH/$ARCHIVE_NAME"
 
           mkdir -p $PROJECT_PATH
 
@@ -42,7 +43,7 @@ jobs:
           composer ${{ github.event.inputs.command }}
 
           cd $COMPOSER_PATH
-          zip -r "$ARCHIVE_PATH" "$PROJECT_PATH"
+          zip -r "$ARCHIVE_NAME" "$PROJECT_PATH"
 
           cd ..
           git config user.name "github-actions[bot]"
