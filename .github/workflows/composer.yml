@@ -43,7 +43,7 @@ jobs:
           composer ${{ github.event.inputs.command }}
 
           cd $COMPOSER_PATH
-          zip -r "$ARCHIVE_NAME" "$PROJECT_PATH"
+          zip -r "$ARCHIVE_NAME" "$PROJECT_NAME"
 
           cd ..
           git config user.name "github-actions[bot]"
