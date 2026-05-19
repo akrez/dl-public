@@ -2,8 +2,8 @@ name: Composer Command
 on:
   workflow_dispatch:
     inputs:
-      project_path:
-        description: "project path where located composer.json (/composer/project1)"
+      project_name:
+        description: "project path where located composer.json (/composer/{project1})"
         required: true
         type: string
       content:
@@ -32,18 +32,18 @@ jobs:
       - name: Create Project Directory
         run: |
           BASE_PATH="$PWD/../../composer"
-          PROJECT_PATH="$BASE_PATH/${{ github.event.inputs.project_path }}"
-          ARCHIVE_PATH="$BASE_PATH/${{ github.event.inputs.project_path }}.zip"
-          PROJECT_DIR="$(dirname "$PROJECT_PATH")"
+          PROJECT_NAME="$BASE_PATH/${{ github.event.inputs.project_name }}"
+          ARCHIVE_PATH="$BASE_PATH/${{ github.event.inputs.project_name }}.zip"
+          PROJECT_DIR="$(dirname "$PROJECT_NAME")"
 
-          mkdir -p $PROJECT_PATH
+          mkdir -p $PROJECT_NAME
 
-          cd $PROJECT_PATH
+          cd $PROJECT_NAME
 
           composer ${{ github.event.inputs.command }}
 
           cd $PROJECT_DIR
-          zip -r "$ARCHIVE_PATH" "$PROJECT_PATH"
+          zip -r "$ARCHIVE_PATH" "$PROJECT_NAME"
 
           cd ..
           git config user.name "github-actions[bot]"
