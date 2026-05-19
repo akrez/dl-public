@@ -6,8 +6,8 @@ on:
         description: "project path where located composer.json (/composer/{project1})"
         required: true
         type: string
-      content:
-        description: "composer.json content"
+      command:
+        description: "composer {command}"
         required: false
         type: string
 
@@ -29,7 +29,7 @@ jobs:
       - name: Install Composer dependencies
         run: composer self-update
 
-      - name: Create Project Directory
+      - name: Run
         run: |
           BASE_PATH="$PWD/../../composer"
           PROJECT_NAME="$BASE_PATH/${{ github.event.inputs.project_name }}"
